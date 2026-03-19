@@ -19,35 +19,36 @@ else
   echo "No 'dotfiles' directory found; skipping stow."
 fi
 
-# Install Zap (Zsh plugin manager) if not present
-ZAP_DIR="$HOME/.zap"
-if [ ! -d "$ZAP_DIR" ]; then
-  echo "Installing Zap..."
-  git clone --depth=1 https://github.com/zap-zsh/zap.git "$ZAP_DIR"
+# Install Oh My Zsh (unattended) if not present
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+  echo "Installing Oh My Zsh..."
+  export RUNZSH=no CHSH=no KEEP_ZSHRC=yes
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" --unattended
 fi
-# Source Zap to make the 'zap' function available
+
+# Set up Powerlevel10k theme
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+if [ ! -d "${ZSH_CUSTOM}/themes/powerlevel10k" ]; then
+  git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "${ZSH_CUSTOM}/themes/powerlevel10k"
+fi
+
+# Install desired plugins
+git clone --depth=1 https://github.com/zsh-users/zsh-autosuggestions "${ZSH_CUSTOM}/plugins/zsh-autosuggestions"
+git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "${ZSH_CUSTOM}/plugins/zsh-syntax-highlighting"
+git clone --depth=1 https://github.com/Aloxaf/fzf-tab "${ZSH_CUSTOM}/plugins/fzf-tab"
+
+# Ensure .zshrc has proper configuration
 ZSHRC="$HOME/.zshrc"
+if ! grep -q 'ZSH_THEME="powerlevel10k/powerlevel10k"' "$ZSHRC" 2>/dev/null; then
+  cat <<'EOF' >> "$ZSHRC"
 
-# Ensure Zap initialization is in .zshrc for future sessions
-if [ ! -f "$ZSHRC" ]; then
-    touch "$ZSHRC"
+# Oh My Zsh configuration (added by install.sh)
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+plugins=(git zsh-autosuggestions zsh-syntax-highlighting fzf-tab)
+source $ZSH/oh-my-zsh.sh
+EOF
 fi
-
-if ! grep -q 'source.*\.zap/zap.zsh' "$ZSHRC" 2>/dev/null; then
-    echo -e '\n# Zap initialization\nsource ~/.zap/zap.zsh' >> "$ZSHRC"
-fi
-
-# Source Zap for current session (this defines the 'zap' function)
-# shellcheck source=/dev/null
-source "$ZAP_DIR/zap.zsh"
-
-# Install Powerlevel10k via Zap
-zap install romkatv/powerlevel10k
-
-# Install Zsh plugins via Zap
-zap install zsh-users/zsh-autosuggestions
-zap install zsh-users/zsh-syntax-highlighting
-zap install Aloxaf/fzf-tab
 
 # Install Tmux Plugin Manager (TPM)
 TPM_DIR="$HOME/.tmux/plugins/tpm"
