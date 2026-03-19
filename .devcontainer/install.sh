@@ -14,7 +14,7 @@ fi
 # Use Stow to symlink dotfiles (expects a 'dotfiles' directory with subfolders)
 if [ -d "dotfiles" ]; then
   echo "Stowing dotfiles..."
-  stow -t $HOME -d dotfiles zsh tmux nvim
+  stow --adopt -t $HOME -d dotfiles zsh tmux nvim
 else
   echo "No 'dotfiles' directory found; skipping stow."
 fi
