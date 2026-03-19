@@ -1,11 +1,8 @@
 # syntax=docker/dockerfile:1
 FROM ubuntu:22.04
 
-# Install utilities and add eza PPA
+# Install core utilities (excluding eza, which we install manually)
 RUN apt-get update && \
-    apt-get install -y software-properties-common && \
-    add-apt-repository -y ppa:eza-team/eza && \
-    apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         build-essential \
         curl \
@@ -15,7 +12,6 @@ RUN apt-get update && \
         neovim \
         python3-pip \
         nodejs npm \
-        eza \
         bat \
         zoxide \
         fzf \
@@ -24,6 +20,11 @@ RUN apt-get update && \
         locales && \
     # Clean apt caches
     apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Install latest stable eza binary from GitHub releases
+RUN wget -qO- https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz | tar xz -C /usr/local/bin && \
+    chmod +x /usr/local/bin/eza && \
+    ln -s /usr/local/bin/eza /usr/local/bin/exa || true
 
 # Set locale (helps tools like neovim)
 RUN locale-gen en_US.UTF-8 && update-locale LANG=en_US.UTF-8
