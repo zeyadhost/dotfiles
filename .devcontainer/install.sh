@@ -33,13 +33,13 @@ if [ ! -f "$ZSHRC" ]; then
     touch "$ZSHRC"
 fi
 
-if ! grep -q 'source.*\.zap/init\.zsh' "$ZSHRC" 2>/dev/null; then
-    echo -e '\n# Zap initialization\nsource ~/.zap/init.zsh' >> "$ZSHRC"
+if ! grep -q 'source.*\.zap/zap.zsh' "$ZSHRC" 2>/dev/null; then
+    echo -e '\n# Zap initialization\nsource ~/.zap/zap.zsh' >> "$ZSHRC"
 fi
 
 # Source Zap for current session (this defines the 'zap' function)
 # shellcheck source=/dev/null
-source "$ZAP_DIR/init.zsh"
+source "$ZAP_DIR/zap.zsh"
 
 # Install Powerlevel10k via Zap
 zap install romkatv/powerlevel10k
