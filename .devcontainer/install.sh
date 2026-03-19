@@ -25,7 +25,21 @@ if [ ! -d "$ZAP_DIR" ]; then
   echo "Installing Zap..."
   git clone --depth=1 https://github.com/zap-zsh/zap.git "$ZAP_DIR"
 fi
-export PATH="$ZAP_DIR/bin:$PATH"
+# Source Zap to make the 'zap' function available
+ZSHRC="$HOME/.zshrc"
+
+# Ensure Zap initialization is in .zshrc for future sessions
+if [ ! -f "$ZSHRC" ]; then
+    touch "$ZSHRC"
+fi
+
+if ! grep -q 'source.*\.zap/init\.zsh' "$ZSHRC" 2>/dev/null; then
+    echo -e '\n# Zap initialization\nsource ~/.zap/init.zsh' >> "$ZSHRC"
+fi
+
+# Source Zap for current session (this defines the 'zap' function)
+# shellcheck source=/dev/null
+source "$ZAP_DIR/init.zsh"
 
 # Install Powerlevel10k via Zap
 zap install romkatv/powerlevel10k
@@ -44,11 +58,7 @@ fi
 # Install any tmux plugins defined in .tmux.conf via TPM
 "$TPM_DIR/scripts/install_plugins.sh"
 
-# Ensure Zsh loads Zap on startup
-ZSHRC="$HOME/.zshrc"
-if ! grep -q "source $ZAP_DIR/init.zsh" "$ZSHRC"; then
-  echo -e "\n# Zap initialization\nsource $ZAP_DIR/init.zsh" >> "$ZSHRC"
-fi
+
 
 # Done – advise user to restart shell
 if [ -t 1 ]; then
