@@ -1,0 +1,1 @@
+" init.vim – managed by Stow\n" Set basic options\nset number\nset relativenumber\nset hidden\n\n" Use modern plugins via vim-plug (you can replace with lazy.nvim later)\ncall plug#begin('~/.local/share/nvim/plugged')\nPlug 'preservim/nerdtree'\nPlug 'neoclide/coc.nvim', {'branch': 'release'}\ncall plug#end()\n
