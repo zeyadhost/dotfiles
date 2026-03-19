@@ -11,7 +11,7 @@
   "settings": {
     "terminal.integrated.defaultProfile.linux": "zsh"
   },
-  "postCreateCommand": "./install.sh",
+  "postCreateCommand": "bash .devcontainer/install.sh",
   "remoteUser": "vscode",
   "extensions": [],
   "forwardPorts": [],
