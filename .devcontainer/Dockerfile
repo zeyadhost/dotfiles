@@ -9,9 +9,9 @@ RUN apt-get update && \
         git \
         zsh \
         tmux \
-        neovim \
         python3-pip \
         nodejs npm \
+
         bat \
         zoxide \
         fzf \
@@ -22,7 +22,7 @@ RUN apt-get update && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install latest stable eza binary from GitHub releases
-RUN wget -qO- https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz | tar xz -C /usr/local/bin && \
+RUN curl -L https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz | tar xz -C /usr/local/bin && \
     chmod +x /usr/local/bin/eza && \
     ln -s /usr/local/bin/eza /usr/local/bin/exa || true
 
@@ -37,7 +37,7 @@ RUN ln -s $(which batcat) /usr/local/bin/bat || true
 RUN curl -L -o /tmp/nvim.appimage https://github.com/neovim/neovim/releases/download/stable/nvim.appimage && \
     chmod u+x /tmp/nvim.appimage && \
     mv /tmp/nvim.appimage /usr/local/bin/nvim && \
-    ln -s /usr/local/bin/nvim /usr/bin/nvim
+    ln -sf /usr/local/bin/nvim /usr/bin/nvim
 
 # Set default shell for vscode user (will be created by the base image)
 ARG USERNAME=vscode
